@@ -3,8 +3,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button, Dialog, Flex, TextField, Text } from "@radix-ui/themes";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
-interface ClientDetailForm {
+interface NewClientForm {
   name: string;
   email: string;
   avatar: string;
@@ -13,7 +15,8 @@ interface ClientDetailForm {
 }
 
 const AddClient = () => {
-  const { register, handleSubmit } = useForm<ClientDetailForm>();
+  const router = useRouter();
+  const { register, handleSubmit } = useForm<NewClientForm>();
 
   return (
     <div>
@@ -24,59 +27,74 @@ const AddClient = () => {
 
         <Dialog.Content style={{ maxWidth: 450 }}>
           <Dialog.Title>Add New Client</Dialog.Title>
+          <form
+            onSubmit={handleSubmit(async (data) => {
+              await axios.post("/api/clients", data);
+              router.push("/");
+            })}
+          >
+            <Flex direction="column" gap="3">
+              <label>
+                <Text as="div" size="2" mb="1" weight="bold">
+                  Name
+                </Text>
+                <TextField.Input
+                  defaultValue=""
+                  placeholder="Enter name"
+                  {...register("name")}
+                />
+              </label>
+              <label>
+                <Text as="div" size="2" mb="1" weight="bold">
+                  Contact
+                </Text>
+                <TextField.Input
+                  defaultValue=""
+                  placeholder="Enter email"
+                  {...register("email")}
+                />
+              </label>
+              <label>
+                <Text as="div" size="2" mb="1" weight="bold">
+                  Avatar
+                </Text>
+                <TextField.Input
+                  defaultValue=""
+                  placeholder="Enter web address of image"
+                  {...register("avatar")}
+                />
+              </label>
+              <label>
+                <Text as="div" size="2" mb="1" weight="bold">
+                  Organization
+                </Text>
+                <TextField.Input
+                  defaultValue=""
+                  placeholder="Enter organization name"
+                  {...register("organization")}
+                />
+              </label>
+              <label>
+                <Text as="div" size="2" mb="1" weight="bold">
+                  Assigned User
+                </Text>
+                <TextField.Input
+                  defaultValue=""
+                  placeholder="Enter assigned user"
+                  {...register("assigned_user")}
+                />
+              </label>
+            </Flex>
 
-          <Flex direction="column" gap="3">
-            <label>
-              <Text as="div" size="2" mb="1" weight="bold">
-                Name
-              </Text>
-              <TextField.Input defaultValue="" placeholder="Enter name" />
-            </label>
-            <label>
-              <Text as="div" size="2" mb="1" weight="bold">
-                Contact
-              </Text>
-              <TextField.Input defaultValue="" placeholder="Enter email" />
-            </label>
-            <label>
-              <Text as="div" size="2" mb="1" weight="bold">
-                Avatar
-              </Text>
-              <TextField.Input
-                defaultValue=""
-                placeholder="Enter web address of image"
-              />
-            </label>
-            <label>
-              <Text as="div" size="2" mb="1" weight="bold">
-                Organization
-              </Text>
-              <TextField.Input
-                defaultValue=""
-                placeholder="Enter organization name"
-              />
-            </label>
-            <label>
-              <Text as="div" size="2" mb="1" weight="bold">
-                Assigned User
-              </Text>
-              <TextField.Input
-                defaultValue=""
-                placeholder="Enter assigned user"
-              />
-            </label>
-          </Flex>
-
-          <Flex gap="3" mt="4" justify="end">
-            <Dialog.Close>
-              <Button variant="soft" color="gray">
-                Cancel
-              </Button>
-            </Dialog.Close>
-            <Dialog.Close>
+            <Flex gap="3" mt="4" justify="end">
+              <Dialog.Close>
+                <Button variant="soft" color="gray">
+                  Cancel
+                </Button>
+              </Dialog.Close>
               <Button>Submit</Button>
-            </Dialog.Close>
-          </Flex>
+            </Flex>
+          </form>
         </Dialog.Content>
       </Dialog.Root>
     </div>
