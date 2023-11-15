@@ -11,16 +11,15 @@ import {
   Callout,
 } from "@radix-ui/themes";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClientSchema } from "../validationSchema";
 import { z } from "zod";
 import Spinner from "./Spinner";
 
 type NewClientForm = z.infer<typeof createClientSchema>;
+const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
 const AddClient = () => {
-  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -30,10 +29,11 @@ const AddClient = () => {
   });
   const [error, setError] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
     <div>
-      <Dialog.Root>
+      <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Trigger>
           <Button>Add New Client</Button>
         </Dialog.Trigger>
@@ -50,7 +50,7 @@ const AddClient = () => {
               try {
                 setSubmitting(true);
                 await axios.post("/api/clients", data);
-                router.push("/");
+                wait().then(() => setOpen(false));
               } catch (error) {
                 setSubmitting(false);
                 setError("An unexpected error occured.");
