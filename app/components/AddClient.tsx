@@ -1,8 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button, Dialog, Flex, TextField, Text } from "@radix-ui/themes";
+import {
+  Button,
+  Dialog,
+  Flex,
+  TextField,
+  Text,
+  Callout,
+} from "@radix-ui/themes";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -17,6 +24,7 @@ interface NewClientForm {
 const AddClient = () => {
   const router = useRouter();
   const { register, handleSubmit } = useForm<NewClientForm>();
+  const [error, setError] = useState("");
 
   return (
     <div>
@@ -27,10 +35,19 @@ const AddClient = () => {
 
         <Dialog.Content style={{ maxWidth: 450 }}>
           <Dialog.Title>Add New Client</Dialog.Title>
+          {error && (
+            <Callout.Root color="red" className="mb-5">
+              <Callout.Text>{error}</Callout.Text>
+            </Callout.Root>
+          )}
           <form
             onSubmit={handleSubmit(async (data) => {
-              await axios.post("/api/clients", data);
-              router.push("/");
+              try {
+                await axios.post("/api/clients", data);
+                router.push("/");
+              } catch (error) {
+                setError("An unexpected error occured.");
+              }
             })}
           >
             <Flex direction="column" gap="3">
