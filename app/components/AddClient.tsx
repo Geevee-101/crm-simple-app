@@ -12,18 +12,21 @@ import {
 } from "@radix-ui/themes";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createClientSchema } from "../validationSchema";
+import { z } from "zod";
 
-interface NewClientForm {
-  name: string;
-  email: string;
-  avatar: string;
-  organization: string;
-  assigned_user: string;
-}
+type NewClientForm = z.infer<typeof createClientSchema>;
 
 const AddClient = () => {
   const router = useRouter();
-  const { register, handleSubmit } = useForm<NewClientForm>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<NewClientForm>({
+    resolver: zodResolver(createClientSchema),
+  });
   const [error, setError] = useState("");
 
   return (
@@ -60,6 +63,7 @@ const AddClient = () => {
                   placeholder="Enter name"
                   {...register("name")}
                 />
+                {errors.name && <Text color="red">{errors.name.message}</Text>}
               </label>
               <label>
                 <Text as="div" size="2" mb="1" weight="bold">
@@ -70,6 +74,9 @@ const AddClient = () => {
                   placeholder="Enter email"
                   {...register("email")}
                 />
+                {errors.email && (
+                  <Text color="red">{errors.email.message}</Text>
+                )}
               </label>
               <label>
                 <Text as="div" size="2" mb="1" weight="bold">
@@ -80,6 +87,9 @@ const AddClient = () => {
                   placeholder="Enter web address of image"
                   {...register("avatar")}
                 />
+                {errors.avatar && (
+                  <Text color="red">{errors.avatar.message}</Text>
+                )}
               </label>
               <label>
                 <Text as="div" size="2" mb="1" weight="bold">
@@ -90,6 +100,9 @@ const AddClient = () => {
                   placeholder="Enter organization name"
                   {...register("organization")}
                 />
+                {errors.organization && (
+                  <Text color="red">{errors.organization.message}</Text>
+                )}
               </label>
               <label>
                 <Text as="div" size="2" mb="1" weight="bold">
@@ -100,6 +113,9 @@ const AddClient = () => {
                   placeholder="Enter assigned user"
                   {...register("assigned_user")}
                 />
+                {errors.assigned_user && (
+                  <Text color="red">{errors.assigned_user.message}</Text>
+                )}
               </label>
             </Flex>
 
