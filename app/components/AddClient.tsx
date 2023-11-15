@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClientSchema } from "../validationSchema";
 import { z } from "zod";
+import Spinner from "./Spinner";
 
 type NewClientForm = z.infer<typeof createClientSchema>;
 
@@ -28,6 +29,7 @@ const AddClient = () => {
     resolver: zodResolver(createClientSchema),
   });
   const [error, setError] = useState("");
+  const [isSubmitting, setSubmitting] = useState(false);
 
   return (
     <div>
@@ -46,9 +48,11 @@ const AddClient = () => {
           <form
             onSubmit={handleSubmit(async (data) => {
               try {
+                setSubmitting(true);
                 await axios.post("/api/clients", data);
                 router.push("/");
               } catch (error) {
+                setSubmitting(false);
                 setError("An unexpected error occured.");
               }
             })}
@@ -125,7 +129,9 @@ const AddClient = () => {
                   Cancel
                 </Button>
               </Dialog.Close>
-              <Button>Submit</Button>
+              <Button disabled={isSubmitting}>
+                Submit {isSubmitting && <Spinner />}
+              </Button>
             </Flex>
           </form>
         </Dialog.Content>
