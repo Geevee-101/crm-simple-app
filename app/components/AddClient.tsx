@@ -23,6 +23,8 @@ const AddClient = () => {
   const {
     register,
     handleSubmit,
+    reset,
+    formState,
     formState: { errors },
   } = useForm<NewClientForm>({
     resolver: zodResolver(createClientSchema),
@@ -30,6 +32,12 @@ const AddClient = () => {
   const [error, setError] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
   const [open, setOpen] = useState(false);
+
+  React.useEffect(() => {
+    if (formState.isSubmitSuccessful) {
+      reset();
+    }
+  }, [formState, reset]);
 
   return (
     <div>
@@ -125,12 +133,14 @@ const AddClient = () => {
 
             <Flex gap="3" mt="4" justify="end">
               <Dialog.Close>
-                <Button variant="soft" color="gray">
+                <Button variant="soft" color="gray" onClick={() => reset()}>
                   Cancel
                 </Button>
               </Dialog.Close>
-              <Button disabled={isSubmitting}>
-                Submit {isSubmitting && <Spinner />}
+              <Button>
+                {" "}
+                {/*disabled={isSubmitting}>*/}
+                Submit {/*{isSubmitting && <Spinner />}*/}
               </Button>
             </Flex>
           </form>
