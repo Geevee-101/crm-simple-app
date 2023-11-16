@@ -138,7 +138,6 @@ const AddClient = () => {
                 </Button>
               </Dialog.Close>
               <Button>
-                {" "}
                 {/*disabled={isSubmitting}>*/}
                 Submit {/*{isSubmitting && <Spinner />}*/}
               </Button>

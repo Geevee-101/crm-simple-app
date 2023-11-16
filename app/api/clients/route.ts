@@ -14,3 +14,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newClient, {status: 201});
 }
+
+export async function GET() {
+    try {
+        console.log("getting!")
+        const clients = await prisma.client.findMany();
+        return NextResponse.json(clients, {status: 200});
+    } catch(error) {
+        return NextResponse.json({message: 'could not find data'}, {status: 500});
+    }
+}
